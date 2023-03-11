@@ -1,9 +1,11 @@
 package com.alexmisko.controller;
 
+import com.alexmisko.config.ConditionException;
 import com.alexmisko.feign.UserInfoFeign;
 import com.alexmisko.filter.AccessContext;
 import com.alexmisko.pojo.Video;
 import com.alexmisko.service.VideoService;
+import com.alexmisko.util.FastDFSClientUtil;
 import com.alexmisko.vo.LoginUserInfo;
 import com.alexmisko.vo.Result;
 import com.alexmisko.vo.UserInfo;
@@ -14,7 +16,9 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @Slf4j
@@ -27,10 +31,13 @@ public class VideoController {
     @Autowired
     UserInfoFeign userInfoFeign;
 
+    @Autowired
+    private FastDFSClientUtil fastDFSClientUtil;
+
     /**
      * 查询一条视频
      */
-    @GetMapping("video/{id}")
+    @GetMapping("video/admin/{id}")
     public Result<Video> oneVideo(@PathVariable Long id){
         LoginUserInfo loginUserInfo = AccessContext.getLoginUserInfo();
         log.info("userId and username and role: [{}] [{}] [{}]", loginUserInfo.getId(), loginUserInfo.getUsername(), loginUserInfo.getRole());
@@ -43,7 +50,7 @@ public class VideoController {
     /**
      * 分页查询视频
      */
-    @GetMapping("video")
+    @GetMapping("video/user")
     public Result<IPage<Video>> pageVideo(Long page, Long num){
         QueryWrapper<Video> queryWrapper = new QueryWrapper<>();
         queryWrapper.orderByDesc("create_time");
@@ -63,8 +70,15 @@ public class VideoController {
     /**
      * 上传视频
      */
-    @PostMapping("video")
-    public Result<Boolean> uploadVideo(@RequestBody Video video){
-        return Result.success(videoService.save(video));
+    @PostMapping("video/user")
+    public Result<String> uploadVideo(@RequestParam("img") MultipartFile file){
+        String groupPath = null;
+        try {
+            groupPath = fastDFSClientUtil.uploadFile(file);
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new ConditionException("上传失败！");
+        }
+        return new Result<>("200", "上传成功！", groupPath);
     }
 }

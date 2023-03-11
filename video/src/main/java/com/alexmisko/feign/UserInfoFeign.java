@@ -9,6 +9,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 @FeignClient(value = "USER-INFO", configuration = FeignConfig.class)
 public interface UserInfoFeign {
-    @GetMapping("/userInfo/{id}")
+    @GetMapping("/userInfo/admin/{id}")
     public Result<UserInfo> getUserInfo(@PathVariable Long id);
 }

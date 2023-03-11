@@ -21,14 +21,15 @@ public class ResourceUtil{
 
     // 用户资源
     private static final String[] USER_PATH = {
-        "/video/**",
+        "/video/user",
         "/comment/**",
         "/userInfo/user/**"
     };
 
     // 管理员资源
     private static final String[] ADMIN_PATH = {
-        "/userInfo/admin/**"
+        "/userInfo/admin/**",
+        "/video/admin/**"
     };
 
     private static final String AUTH_PUBLIC = "ROLE_PUBLIC";

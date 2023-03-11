@@ -24,3 +24,13 @@ mybatis-plus:
       table-prefix: flow_
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+fdfs:
+  web-server-url: http://38.34.245.48:8888
+  connect-timeout: 60000
+  so-timeout: 36000
+  tracker-list: # tracker地址：你的虚拟机服务器地址+端口（默认是22122）
+    - 38.34.245.48:22122
+  pool:
+    max-total-per-key: 50
+    max-wait-millis: 60000
