@@ -86,7 +86,7 @@ public class VideoController {
     }
 
     /**
-     * 直接上传视频
+     * 分片上传视频
      */
     @PostMapping(value = "video/chunk/user")
     public Result<String> uploadVideoChunk(@RequestParam("file") MultipartFile file, String fileMD5, Integer sliceNo, Integer totalSliceNo) throws Exception{
@@ -98,6 +98,6 @@ public class VideoController {
             e.printStackTrace();
             throw new ConditionException("上传失败！");
         }
-        return new Result<>("200", "上传成功！", groupPath);
+        return Result.success("上传成功！", groupPath);
     }
 }

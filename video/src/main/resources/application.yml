@@ -3,6 +3,9 @@ server:
 spring:
   application:
     name: VIDEO
+  servlet:
+    multipart:
+      maxFileSize: 10MB
   zipkin:
     base-url: http://103.97.179.91:9411/
   sleuth:

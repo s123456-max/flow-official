@@ -127,7 +127,7 @@ public class FastDFSClientUtil{
         Integer uploadedNo = Integer.valueOf(uploadedNoStr);
         String resultPath = "";
         if(uploadedNo.equals(totalSliceNo)){
-            redisTemplate.opsForValue().get(pathKey);
+            resultPath = webServerUrl + "/" + DEFAULT_GROUP + "/" + redisTemplate.opsForValue().get(pathKey);
             // 清空所有键值
             List<String> keyList = Arrays.asList(uploadedNoKey, pathKey, uploadedSizeKey);
             redisTemplate.delete(keyList);
