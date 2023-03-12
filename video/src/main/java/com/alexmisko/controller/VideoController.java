@@ -10,16 +10,19 @@ import com.alexmisko.vo.LoginUserInfo;
 import com.alexmisko.vo.Result;
 import com.alexmisko.vo.UserInfo;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
 
 @Slf4j
 @RestController
@@ -68,13 +71,29 @@ public class VideoController {
     }
 
     /**
-     * 上传视频
+     * 直接上传视频
      */
     @PostMapping("video/user")
     public Result<String> uploadVideo(@RequestParam("img") MultipartFile file){
         String groupPath = null;
         try {
             groupPath = fastDFSClientUtil.uploadFile(file);
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new ConditionException("上传失败！");
+        }
+        return new Result<>("200", "上传成功！", groupPath);
+    }
+
+    /**
+     * 直接上传视频
+     */
+    @PostMapping(value = "video/chunk/user")
+    public Result<String> uploadVideoChunk(@RequestParam("file") MultipartFile file, String fileMD5, Integer sliceNo, Integer totalSliceNo) throws Exception{
+        log.info("fileMD5 and sliceNo and totalSliceNo: [{}], [{}], [{}]", fileMD5, sliceNo, totalSliceNo);
+        String groupPath = null;
+        try {
+            groupPath = fastDFSClientUtil.uploadFileBySlices(file, fileMD5, sliceNo, totalSliceNo);
         } catch (IOException e) {
             e.printStackTrace();
             throw new ConditionException("上传失败！");

@@ -23,7 +23,8 @@ public class ResourceUtil{
     private static final String[] USER_PATH = {
         "/video/user",
         "/comment/**",
-        "/userInfo/user/**"
+        "/userInfo/user/**",
+        "/video/chunk/user"
     };
 
     // 管理员资源

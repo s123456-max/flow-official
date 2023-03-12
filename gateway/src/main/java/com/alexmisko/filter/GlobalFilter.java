@@ -5,6 +5,7 @@ import com.alexmisko.util.TokenParseUtil;
 import com.alexmisko.vo.LoginUserInfo;
 import com.alibaba.fastjson.JSON;
 
+import io.jsonwebtoken.ExpiredJwtException;
 import lombok.extern.slf4j.Slf4j;
 import com.alexmisko.util.ResourceUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,16 +53,27 @@ public class GlobalFilter implements org.springframework.cloud.gateway.filter.Gl
         //不是登录或注册，校验token是否能解析
         HttpHeaders headers = request.getHeaders();
         String token = headers.getFirst(CommonConstant.JWT_USER_INFO_KEY);
+        log.info("请求携带的token：[{}]", token);
         LoginUserInfo loginUserInfo = null;
         try {
             loginUserInfo = TokenParseUtil.getLoginUserInfo(token);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+        } catch (ExpiredJwtException e) {
+            response.getHeaders().add(HttpHeaders.CONTENT_TYPE,"application/json;charset=UTF-8");
+            response.setStatusCode(HttpStatus.OK);
+            String body = "{\"code\":500,\"msg\":\"token过期！\"}";
+            DataBuffer buffer = response.bufferFactory().wrap(body.getBytes(StandardCharsets.UTF_8));
+            return response.writeWith(Mono.just(buffer).doOnError(error -> DataBufferUtils.release(buffer)));
+        } catch (Exception e){
+            response.getHeaders().add(HttpHeaders.CONTENT_TYPE,"application/json;charset=UTF-8");
+            response.setStatusCode(HttpStatus.OK);
+            String body = "{\"code\":500,\"msg\":\"token解析错误！\"}";
+            DataBuffer buffer = response.bufferFactory().wrap(body.getBytes(StandardCharsets.UTF_8));
+            return response.writeWith(Mono.just(buffer).doOnError(error -> DataBufferUtils.release(buffer)));
         }
         log.info("request with role [{}]", JSON.toJSONString(loginUserInfo));
         if (null == loginUserInfo || !resourceUtil.isResourcePath(requestPath, resourceUtil.getPath(loginUserInfo.getRole()))){
             response.getHeaders().add(HttpHeaders.CONTENT_TYPE,"application/json;charset=UTF-8");
-            response.setStatusCode(HttpStatus.FORBIDDEN);
+            response.setStatusCode(HttpStatus.OK);
             String body = "{\"code\":403,\"msg\":\"没有权限！\"}";
             DataBuffer buffer = response.bufferFactory().wrap(body.getBytes(StandardCharsets.UTF_8));
             return response.writeWith(Mono.just(buffer).doOnError(error -> DataBufferUtils.release(buffer)));

@@ -18,6 +18,10 @@ spring:
     url: jdbc:mysql://101.43.187.7:3306/drift?characterEncoding=UTF-8&useSSL=false
     username: root
     password: Szx123456
+  redis:
+    host: 101.43.187.7
+    port: 6379
+    password: Szx123456
 mybatis-plus:
   global-config:
     db-config:
