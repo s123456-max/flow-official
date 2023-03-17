@@ -1,0 +1,8 @@
+server:
+  port: 8004
+spring:
+  application:
+    name: CHAT
+  cloud:
+    nacos:
+      server-addr: 101.43.187.7:8848

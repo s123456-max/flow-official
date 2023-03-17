@@ -15,6 +15,7 @@
         <module>auth</module>
         <module>userInfo</module>
         <module>comment</module>
+        <module>chat</module>
     </modules>
 
     <properties>
