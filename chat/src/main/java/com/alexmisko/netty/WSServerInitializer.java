@@ -18,6 +18,7 @@ public class WSServerInitializer extends ChannelInitializer<SocketChannel> {
         channelPipeline.addLast(new ChunkedWriteHandler());
         // 对http进行聚合，聚合成FullHttpRequest或FullHttpResponse
         channelPipeline.addLast(new HttpObjectAggregator(1024 * 64));
+        channelPipeline.addLast(new AuthHandler());
         // websocket处理的协议，用于指定给客户端连接访问的路由
         channelPipeline.addLast(new WebSocketServerProtocolHandler("/ws"));
         channelPipeline.addLast(new ChatHandler());
