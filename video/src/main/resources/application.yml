@@ -33,7 +33,7 @@ mybatis-plus:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 
 fdfs:
-  web-server-url: http://38.34.245.48:8888
+  web-server-url: https://dfs.alexmisko.com
   connect-timeout: 60000
   so-timeout: 36000
   tracker-list: # tracker地址：你的虚拟机服务器地址+端口（默认是22122）
