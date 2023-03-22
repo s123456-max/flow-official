@@ -37,7 +37,7 @@ fdfs:
   connect-timeout: 60000
   so-timeout: 36000
   tracker-list: # tracker地址：你的虚拟机服务器地址+端口（默认是22122）
-    - 45.144.136.203:22122
+    - 43.153.124.79:22122
   pool:
     max-total-per-key: 50
     max-wait-millis: 600000
