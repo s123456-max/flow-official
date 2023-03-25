@@ -17,14 +17,15 @@ spring:
 
   datasource:
     type: com.alibaba.druid.pool.DruidDataSource
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://101.43.187.7:3306/drift?characterEncoding=UTF-8&useSSL=false
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://158.51.124.2:8066/test?characterEncoding=UTF-8&useSSL=false
     username: root
     password: Szx123456
   redis:
-    host: 101.43.187.7
-    port: 6379
     password: Szx123456
+    sentinel:
+      master: mymaster
+      nodes: 38.34.245.48:16379, 66.187.4.234:16379, 158.51.124.2:16379
 mybatis-plus:
   global-config:
     db-config:
@@ -33,11 +34,11 @@ mybatis-plus:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 
 fdfs:
-  web-server-url: http://38.34.245.48:8888
+  web-server-url: https://dfs.alexmisko.com
   connect-timeout: 60000
   so-timeout: 36000
   tracker-list: # tracker地址：你的虚拟机服务器地址+端口（默认是22122）
-    - 38.34.245.48:22122
+    - 43.153.124.79:22122
   pool:
     max-total-per-key: 50
-    max-wait-millis: 60000
+    max-wait-millis: 600000
