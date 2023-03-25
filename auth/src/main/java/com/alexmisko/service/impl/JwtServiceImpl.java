@@ -15,7 +15,7 @@ import com.alexmisko.vo.LoginUserInfo;
 import com.alexmisko.vo.Result;
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.mysql.cj.util.StringUtils;
+import org.springframework.util.StringUtils;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.extern.slf4j.Slf4j;
@@ -78,7 +78,7 @@ public class JwtServiceImpl implements JwtService {
             throw new ConditionException("无效的手机号！");
         }
         String rawPassword = user.getPassword();
-        if(StringUtils.isNullOrEmpty(rawPassword)){
+        if(StringUtils.isEmpty(rawPassword)){
             throw new ConditionException("密码不能为空！");
         }
         QueryWrapper<User> queryWrapper = new QueryWrapper<>();
@@ -114,7 +114,7 @@ public class JwtServiceImpl implements JwtService {
         if (!matcher.matches()) {
             throw new ConditionException("无效的手机号！");
         }
-        if(StringUtils.isNullOrEmpty(user.getPassword())){
+        if(StringUtils.isEmpty(user.getPassword())){
             throw new ConditionException("密码不能为空！");
         }
         if(!redisTemplate.hasKey(SmsConstant.MOBILE_SMS_CODE + ":" + user.getUsername())){
