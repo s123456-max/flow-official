@@ -20,9 +20,10 @@ spring:
     username: root
     password: Szx123456
   redis:
-    host: 101.43.187.7
-    port: 6379
     password: Szx123456
+    sentinel:
+      master: mymaster
+      nodes: 38.34.245.48:16379, 66.187.4.234:16379, 158.51.124.2:16379
 
 mybatis-plus:
   global-config:
