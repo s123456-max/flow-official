@@ -5,4 +5,4 @@ spring:
     name: CHAT
   cloud:
     nacos:
-      server-addr: 101.43.187.7:8848
+      server-addr: 101.43.187.7
