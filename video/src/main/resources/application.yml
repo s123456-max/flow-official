@@ -14,8 +14,6 @@ spring:
   cloud:
     nacos:
       server-addr: 101.43.187.7:8848
-      discovery:
-        ip: 66.187.4.234
 
   datasource:
     type: com.alibaba.druid.pool.DruidDataSource
