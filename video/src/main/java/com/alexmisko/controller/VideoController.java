@@ -16,13 +16,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
 
 @Slf4j
 @RestController
@@ -99,5 +95,13 @@ public class VideoController {
             throw new ConditionException("上传失败！");
         }
         return Result.success("上传成功！", groupPath);
+    }
+
+    /*
+     * 动态发布
+     */
+    @PostMapping("/flow")
+    public Result<String> postFlow(Video video){
+        return Result.success("发布动态成功！");
     }
 }

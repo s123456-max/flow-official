@@ -4,7 +4,7 @@ spring:
   application:
     name: USER-INFO
   zipkin:
-    base-url: http://103.97.179.91:9411/
+    base-url: http://38.34.245.48:9411/
   sleuth:
     sampler:
       probability: 1.0
