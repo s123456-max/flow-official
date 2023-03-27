@@ -15,7 +15,7 @@
         <module>comment</module>
         <module>chat</module>
         <module>search</module>
-      <module>search</module>
+        <module>tag</module>
   </modules>
 
     <properties>

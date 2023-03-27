@@ -5,9 +5,10 @@ import org.springframework.stereotype.Service;
 
 import com.alexmisko.pojo.Search;
 import com.alexmisko.repository.SearchRepository;
+import com.alexmisko.service.ElasticSearchService;
 
 @Service
-public class ElasticSearchServiceImpl {
+public class ElasticSearchServiceImpl implements ElasticSearchService{
     @Autowired
     private SearchRepository searchRepository;
 
