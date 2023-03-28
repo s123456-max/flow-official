@@ -3,8 +3,10 @@ package com.alexmisko.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.alexmisko.pojo.Tag;
@@ -29,4 +31,9 @@ public class TagController {
         tagService.saveBatch(tagList);
         return Result.success("添加标签成功！");
     }
+
+    @GetMapping("/tag/user")
+    public Result<List<Tag>> getTagList(@RequestParam Long videoId){
+        return tagService.getTagList(videoId);
+    } 
 }

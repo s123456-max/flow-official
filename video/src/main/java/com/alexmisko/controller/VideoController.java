@@ -71,6 +71,13 @@ public class VideoController {
             // 先遍历取id，再请求userInfo
             Result<UserInfo> result = userInfoFeign.getUserInfo(video.getUserId());
             video.setUserInfo(result.getData());
+            // 再添加mediaList
+            video.setMediaList(mediaService.getMediaList(video.getId()));
+            log.info("返回的mediaList: [{}]", mediaService.getMediaList(video.getId()));
+            // 再添加tagList
+            Result<List<Tag>> result1 = tagFeign.getTagList(video.getId());
+            log.info("返回的tagList: [{}]", result1.getData());
+            video.setTagList(result1.getData());
         }
         // 最后重新设置值
         iPageVideo.setRecords(videoList);
