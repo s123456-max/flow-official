@@ -1,19 +1,24 @@
 package com.alexmisko.controller;
 
 import com.alexmisko.config.ConditionException;
+import com.alexmisko.feign.TagFeign;
 import com.alexmisko.feign.UserInfoFeign;
 import com.alexmisko.filter.AccessContext;
+import com.alexmisko.pojo.Media;
 import com.alexmisko.pojo.Video;
+import com.alexmisko.service.MediaService;
 import com.alexmisko.service.VideoService;
 import com.alexmisko.util.FastDFSClientUtil;
 import com.alexmisko.vo.LoginUserInfo;
 import com.alexmisko.vo.Result;
+import com.alexmisko.vo.Tag;
 import com.alexmisko.vo.UserInfo;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -23,6 +28,12 @@ import java.util.List;
 @Slf4j
 @RestController
 public class VideoController {
+
+    @Autowired
+    TagFeign tagFeign;
+
+    @Autowired
+    MediaService mediaService;
 
     @Autowired
     VideoService videoService;
@@ -100,8 +111,27 @@ public class VideoController {
     /*
      * 动态发布
      */
-    @PostMapping("/flow")
-    public Result<String> postFlow(Video video){
+    @PostMapping("video/flow/user")
+    @Transactional
+    public Result<String> postFlow(@RequestBody Video video){
+        LoginUserInfo loginUserInfo = AccessContext.getLoginUserInfo();
+        Long userId = loginUserInfo.getId();
+        log.info("video的参数: [{}]", video);
+        video.setUserId(userId);
+        videoService.save(video);
+        log.info("videoId: [{}]", video.getId());
+        log.info("mediaList: [{}]", video.getMediaList());
+        List<Media> mediaList = video.getMediaList();
+        mediaList.forEach(item -> {
+            item.setVideoId(video.getId());
+        });
+        mediaService.saveBatch(mediaList);
+        List<Tag> tagList = video.getTagList();
+        log.info("tagList: [{}]", video.getTagList());
+        tagList.forEach(item -> {
+            item.setVideoId(video.getId());
+        });
+        tagFeign.publishTag(tagList);
         return Result.success("发布动态成功！");
     }
 }

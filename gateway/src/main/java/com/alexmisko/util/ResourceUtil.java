@@ -24,7 +24,8 @@ public class ResourceUtil{
         "/video/user",
         "/comment/**",
         "/userInfo/user/**",
-        "/video/chunk/user"
+        "/video/chunk/user",
+        "/video/flow/user"
     };
 
     // 管理员资源

@@ -7,15 +7,15 @@ spring:
     multipart:
       maxFileSize: 10MB
   zipkin:
-    base-url: http://103.97.179.91:9411/
+    base-url: http://38.34.245.48:9411/
   sleuth:
     sampler:
       probability: 1.0
   cloud:
     nacos:
       discovery:
-        server-addr: 101.43.187.7
-        ip: 66.187.4.234
+        server-addr: 103.97.179.91
+        ip: 38.34.245.48
 
   datasource:
     type: com.alibaba.druid.pool.DruidDataSource
@@ -44,3 +44,10 @@ fdfs:
   pool:
     max-total-per-key: 50
     max-wait-millis: 600000
+
+ribbon:
+  OkToRetryOnAllOperations: false #对所有操作请求都进行重试,默认false
+  ReadTimeout: 50000   #负载均衡超时时间，默认值5000
+  ConnectTimeout: 30000 #ribbon请求连接的超时时间，默认值2000
+  MaxAutoRetries: 0     #对当前实例的重试次数，默认0
+  MaxAutoRetriesNextServer: 1 #对切换实例的重试次数，默认1

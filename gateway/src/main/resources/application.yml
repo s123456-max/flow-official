@@ -4,15 +4,15 @@ spring:
   application:
     name: GATEWAY
   zipkin:
-    base-url: http://103.97.179.91:9411/
+    base-url: http://38.34.245.48:9411/
   sleuth:
     sampler:
       probability: 1.0
   cloud:
     nacos:
       discovery:
-        server-addr: 101.43.187.7
-        ip: 66.187.4.234
+        server-addr: 103.97.179.91
+        ip: 38.34.245.48
     gateway:
       routes:
         - id: video_router
@@ -34,3 +34,8 @@ spring:
           uri: lb://VIDEO-COMMENT
           predicates:
             - Path=/comment/**
+
+        - id: tag_router
+          uri: lb://TAG
+          predicates:
+            - Path=/tag/**
