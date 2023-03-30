@@ -16,6 +16,8 @@
         <module>chat</module>
         <module>search</module>
         <module>tag</module>
+    <module>message</module>
+    <module>favor</module>
   </modules>
 
     <properties>
@@ -41,6 +43,7 @@
         <openfeign.version>2.2.6.RELEASE</openfeign.version>
         <tencentcloud-sdk-java-sms.version>3.1.706</tencentcloud-sdk-java-sms.version>
         <fastdfs-client-version>1.27.2</fastdfs-client-version>
+        <rocketmq.spring.boot.starter.version>2.0.2</rocketmq.spring.boot.starter.version>
     </properties>
 
     <!-- 集成springboot父项目 -->
@@ -127,6 +130,12 @@
                 <artifactId>fastdfs-client</artifactId>
                 <version>${fastdfs-client-version}</version>
             </dependency>
+
+            <dependency>
+                <groupId>org.apache.rocketmq</groupId>
+                <artifactId>rocketmq-spring-boot-starter</artifactId>
+                <version>${rocketmq.spring.boot.starter.version}</version>
+        </dependency>
         </dependencies>
     </dependencyManagement>
 </project>

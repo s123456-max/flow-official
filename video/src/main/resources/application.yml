@@ -51,3 +51,8 @@ ribbon:
   ConnectTimeout: 30000 #ribbon请求连接的超时时间，默认值2000
   MaxAutoRetries: 0     #对当前实例的重试次数，默认0
   MaxAutoRetriesNextServer: 1 #对切换实例的重试次数，默认1
+
+rocketmq:
+  name-server: 38.34.245.48:9876
+  producer:
+    group: default-group

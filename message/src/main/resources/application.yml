@@ -1,0 +1,12 @@
+server:
+  port: 8009
+spring:
+  application:
+    name: MESSAGE
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 103.97.179.91
+        ip: 38.34.245.48
+rocketmq:
+  name-server: 38.34.245.48:9876

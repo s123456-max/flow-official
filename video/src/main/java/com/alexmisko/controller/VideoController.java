@@ -17,6 +17,8 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
+
+import org.apache.rocketmq.spring.core.RocketMQTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
@@ -43,6 +45,9 @@ public class VideoController {
 
     @Autowired
     private FastDFSClientUtil fastDFSClientUtil;
+
+    @Autowired
+    private RocketMQTemplate rocketMQTemplate;
 
     /**
      * 查询一条视频
@@ -140,5 +145,17 @@ public class VideoController {
         });
         tagFeign.publishTag(tagList);
         return Result.success("发布动态成功！");
+    }
+
+    /**
+     * 视频点赞
+     */
+    @PostMapping("video/favor/user")
+    public Result<String> favorFlow(Long videoId){
+        log.info("videoId: [{}]", videoId);
+        LoginUserInfo loginUserInfo = AccessContext.getLoginUserInfo();
+        Long userId = loginUserInfo.getId();
+        rocketMQTemplate.convertAndSend("message_favor", "用户【" + userId + "】为你的视频【" + videoId + "】点赞了！");
+        return Result.success("点赞成功！");
     }
 }
