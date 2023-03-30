@@ -3,6 +3,7 @@ package com.alexmisko.component;
 import java.io.IOException;
 import java.util.concurrent.CopyOnWriteArraySet;
 
+import javax.websocket.OnClose;
 import javax.websocket.OnOpen;
 import javax.websocket.Session;
 import javax.websocket.server.PathParam;
@@ -19,7 +20,7 @@ public class WebSocketServer {
 
     private Session session;
     private Long userId;
-    private static CopyOnWriteArraySet<WebSocketServer> webSocketServer = new CopyOnWriteArraySet<WebSocketServer>();
+    private static CopyOnWriteArraySet<WebSocketServer> webSocketSet = new CopyOnWriteArraySet<WebSocketServer>();
 
     @OnOpen
     public void onOpen(Session session, @PathParam(value = "userId") Long userId){
@@ -27,16 +28,38 @@ public class WebSocketServer {
         this.userId = userId;
         log.info("userId: [{}]", userId);
         log.info("this: [{}]", this);
-        webSocketServer.add(this);
+        webSocketSet.add(this);
         try {
-            sendMessage("用户ID:" + userId + "连接成功");
+            sendMessage("用户ID=" + userId + "连接成功");
         } catch(IOException e){
             log.error("Websocket IO Exception");
         }
     }
 
+    @OnClose
+    public void onClose(Session session){
+        for (WebSocketServer item : webSocketSet) {
+            try {
+                if (item.userId.equals(userId)) {
+                    log.info("移除用户ID=" + userId);
+                    webSocketSet.remove(item);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
     public void sendMessage(String message) throws IOException {
-        log.info("session: {[]}", this.session);
         this.session.getBasicRemote().sendText(message);
+    }
+
+    public static void sendFavorMessage(Long userId, String message) throws IOException{
+        for (WebSocketServer item : webSocketSet){
+            log.info("userId and session: [{}] [{}]", item.userId, item.session);
+            if (item.userId.equals(userId)){
+                item.sendMessage(message);
+            }
+        }
     }
 }

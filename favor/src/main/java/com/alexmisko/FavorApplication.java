@@ -1,10 +1,7 @@
 package com.alexmisko;
 
-/**
- * Hello world!
- *
- */
-public class App 
+
+public class FavorApplication
 {
     public static void main( String[] args )
     {
