@@ -16,8 +16,7 @@
         <module>chat</module>
         <module>search</module>
         <module>tag</module>
-    <module>message</module>
-    <module>favor</module>
+        <module>message</module>
   </modules>
 
     <properties>

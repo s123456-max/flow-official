@@ -29,6 +29,8 @@ public class Video {
     private String latitude;
 
     private String location;
+    
+    private Long favorNum;
 
     @TableField(fill = FieldFill.INSERT)
     private Date createTime;
@@ -44,4 +46,7 @@ public class Video {
 
     @TableField(exist = false)
     private List<Tag> tagList;
+
+    @TableField(exist = false)
+    private String isFavor;
 }
