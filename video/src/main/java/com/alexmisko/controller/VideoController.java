@@ -13,9 +13,9 @@ import com.alexmisko.service.VideoService;
 import com.alexmisko.util.FastDFSClientUtil;
 import com.alexmisko.vo.LoginUserInfo;
 import com.alexmisko.vo.Result;
+import com.alexmisko.vo.Search;
 import com.alexmisko.vo.Tag;
 import com.alexmisko.vo.UserInfo;
-import com.alibaba.nacos.common.http.param.Query;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -24,15 +24,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.BooleanUtils;
 import org.apache.rocketmq.spring.core.RocketMQTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 @Slf4j
 @RestController
@@ -151,7 +149,15 @@ public class VideoController {
         Long userId = loginUserInfo.getId();
         log.info("video的参数: [{}]", video);
         video.setUserId(userId);
+        video.setFavorNum(0L);
         videoService.save(video);
+        List<String> tagsList = new ArrayList<>();
+        video.getTagList().forEach(item ->{
+            tagsList.add(item.getTag());
+        });
+        String tags = String.join(" ", tagsList);
+        // 搜索数据异步上传到ES
+        rocketMQTemplate.convertAndSend("message_search", Search.builder().userId(userId).description(video.getDescription()).id(video.getId()).tags(tags).build());
         log.info("videoId: [{}]", video.getId());
         log.info("mediaList: [{}]", video.getMediaList());
         List<Media> mediaList = video.getMediaList();
@@ -165,7 +171,6 @@ public class VideoController {
             item.setVideoId(video.getId());
         });
         tagFeign.publishTag(tagList);
-        video.setFavorNum(0L);
         return Result.success("发布动态成功！");
     }
 

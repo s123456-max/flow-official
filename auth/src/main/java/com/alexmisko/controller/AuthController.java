@@ -74,4 +74,9 @@ public class AuthController {
         log.info("redis存储成功");
         return Result.success("短信发送成功，十分钟内有效！");
     }
+
+    @GetMapping("user")
+    public Result<User> getUser(Long userId) throws Exception{
+        return jwtService.getUser(userId);
+    }
 }

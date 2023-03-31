@@ -11,9 +11,13 @@ import javax.websocket.server.ServerEndpoint;
 
 import org.springframework.stereotype.Component;
 
+import com.alexmisko.config.ConditionException;
+import com.alexmisko.util.TokenParseUtil;
+import com.alexmisko.vo.LoginUserInfo;
+
 import lombok.extern.slf4j.Slf4j;
 
-@ServerEndpoint(value = "/message/{userId}")
+@ServerEndpoint(value = "/message/{token}")
 @Component
 @Slf4j
 public class WebSocketServer {
@@ -23,9 +27,16 @@ public class WebSocketServer {
     private static CopyOnWriteArraySet<WebSocketServer> webSocketSet = new CopyOnWriteArraySet<WebSocketServer>();
 
     @OnOpen
-    public void onOpen(Session session, @PathParam(value = "userId") Long userId){
+    public void onOpen(Session session, @PathParam(value = "token") String token){
+        LoginUserInfo loginUserInfo = null;
+        try{
+            loginUserInfo = TokenParseUtil.getLoginUserInfo(token);
+        } catch (Exception ex) {
+            log.error("parse login user info error: [{}]", ex.getMessage(), ex);
+            throw new ConditionException("token解析错误");
+        }
         this.session = session;
-        this.userId = userId;
+        this.userId = loginUserInfo.getId();
         log.info("userId: [{}]", userId);
         log.info("this: [{}]", this);
         webSocketSet.add(this);

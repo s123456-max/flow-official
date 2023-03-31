@@ -172,4 +172,11 @@ public class JwtServiceImpl implements JwtService {
         KeyFactory keyFactory = KeyFactory.getInstance("RSA");
         return keyFactory.generatePrivate(priPKCS8);
     }
+
+    @Override
+    public Result<User> getUser(Long userId){
+        QueryWrapper<User> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("id", userId);
+        return Result.success(userMapper.selectOne(queryWrapper));
+    }
 }
