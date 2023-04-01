@@ -25,9 +25,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
 import org.springframework.stereotype.Service;
 
+import com.alexmisko.feign.UserInfoFeign;
 import com.alexmisko.pojo.Search;
 import com.alexmisko.repository.SearchRepository;
 import com.alexmisko.service.SearchService;
+import com.alexmisko.vo.Result;
+import com.alexmisko.vo.UserInfo;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -40,6 +43,9 @@ public class SearchServiceImpl implements SearchService{
 
     @Autowired
     private RestHighLevelClient restHighLevelClient;
+
+    @Autowired
+    private UserInfoFeign userInfoFeign;
 
 
     public void addSearch(Search search){
@@ -91,6 +97,12 @@ public class SearchServiceImpl implements SearchService{
             // 处理高亮字段
             Map<String, HighlightField> highLightBuilderFields = hit.getHighlightFields();
             Map<String, Object> sourceMap = hit.getSourceAsMap();
+            log.info("sourceMap: [{}]", sourceMap);
+            // 增加用户信息
+            if (sourceMap.get("userId") != null){
+                Result<UserInfo> result = userInfoFeign.getUserInfo(Long.valueOf((sourceMap.get("userId")).toString()));
+                sourceMap.put("userInfo", result.getData());
+            } 
             for(String key : array){
                 HighlightField field = highLightBuilderFields.get(key);
                 log.info("field: [{}]", field);
