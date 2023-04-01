@@ -27,10 +27,10 @@ public class Search {
     @Field(type = FieldType.Text)
     private String username;
 
-    @Field(type = FieldType.Text)
+    @Field(type = FieldType.Text, analyzer = "ik_max_word", searchAnalyzer = "ik_smart", store = true)
     private String tags;
 
-    @Field(type = FieldType.Text)
+    @Field(type = FieldType.Text, analyzer = "ik_max_word", searchAnalyzer = "ik_smart", store = true)
     private String description;
 
     @Field(type = FieldType.Date, format = DateFormat.basic_date_time)

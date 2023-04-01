@@ -2,6 +2,7 @@ package com.alexmisko.controller;
 
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -25,6 +26,11 @@ public class SearchController {
     @GetMapping("search/all/user")
     public Result<List<Search>> getAllSearch(String keyword){
         return Result.success(searchService.getAllSearch(keyword));
+    }
+
+    @GetMapping("search/highlight/user")
+    public Result<List<Map<String, Object>>> getHighLightSearch(String keyword, Integer pageNo, Integer pageSize){
+        return Result.success(searchService.getHighLightSearch(keyword, pageNo, pageSize));
     }
 
     @DeleteMapping("search/admin")
