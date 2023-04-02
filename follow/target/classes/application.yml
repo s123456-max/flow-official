@@ -1,0 +1,23 @@
+server:
+  port: 8010
+spring:
+  application:
+    name: FOLLOW
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 103.97.179.91
+        ip: 38.34.245.48
+
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://158.51.124.2:8066/test?characterEncoding=UTF-8&useSSL=false
+    username: root
+    password: Szx123456
+mybatis-plus:
+  global-config:
+    db-config:
+      table-prefix: flow_
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl

@@ -17,6 +17,7 @@
         <module>search</module>
         <module>tag</module>
         <module>message</module>
+        <module>follow</module>
   </modules>
 
     <properties>

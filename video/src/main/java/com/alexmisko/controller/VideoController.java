@@ -1,6 +1,7 @@
 package com.alexmisko.controller;
 
 import com.alexmisko.config.ConditionException;
+import com.alexmisko.feign.FollowFeign;
 import com.alexmisko.feign.TagFeign;
 import com.alexmisko.feign.UserInfoFeign;
 import com.alexmisko.filter.AccessContext;
@@ -57,6 +58,9 @@ public class VideoController {
     @Autowired
     private FavorService favorService;
 
+    @Autowired
+    private FollowFeign followFeign;
+
 
     /**
      * 查询一条视频
@@ -101,6 +105,12 @@ public class VideoController {
                 video.setIsFavor("yes");
             }else{
                 video.setIsFavor("no");
+            }
+            // 查询该用户是否关注了创作者
+            if (userId.equals(video.getUserId())){
+                video.setIsFollow("ignore");
+            }else{
+                video.setIsFollow(followFeign.isRelationship(userId, video.getUserId()).getMsg());
             }
         }
         // 最后重新设置值

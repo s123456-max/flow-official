@@ -39,3 +39,8 @@ spring:
           uri: lb://TAG
           predicates:
             - Path=/tag/**
+
+        - id: follow_router
+          uri: lb://FOLLOW
+          predicates:
+            - Path=/follow/**

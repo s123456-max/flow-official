@@ -49,4 +49,7 @@ public class Video {
 
     @TableField(exist = false)
     private String isFavor;
+
+    @TableField(exist = false)
+    private String isFollow;
 }
