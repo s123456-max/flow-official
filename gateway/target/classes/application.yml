@@ -44,3 +44,13 @@ spring:
           uri: lb://FOLLOW
           predicates:
             - Path=/follow/**
+
+        - id: message_router
+          uri: lb://MESSAGE
+          predicates:
+            - Path=/message/**
+
+        - id: chat_router
+          uri: lb://CHAT-NETTY
+          predicates:
+            - Path=/ws/**

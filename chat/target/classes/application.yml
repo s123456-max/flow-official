@@ -1,5 +1,9 @@
 server:
   port: 8004
+netty:
+  port: 8005
+  application:
+    name: CHAT-NETTY
 spring:
   application:
     name: CHAT

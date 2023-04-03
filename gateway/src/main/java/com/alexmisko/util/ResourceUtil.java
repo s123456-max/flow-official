@@ -16,7 +16,9 @@ public class ResourceUtil{
     private static final String[] PUBLIC_PATH = {
         "/auth/signIn",
         "/auth/signUp",
-        "/auth/smsCode/**"
+        "/auth/smsCode/**",
+        "/ws/**",
+        "/message/**"
     };
 
     // 用户资源
@@ -27,7 +29,7 @@ public class ResourceUtil{
         "/video/chunk/user",
         "/video/flow/user",
         "/video/favor/user",
-        "/follow/user"
+        "/follow/user",
     };
 
     // 管理员资源
