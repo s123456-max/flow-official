@@ -12,6 +12,8 @@ import com.alexmisko.service.FavorService;
 import com.alexmisko.service.MediaService;
 import com.alexmisko.service.VideoService;
 import com.alexmisko.util.FastDFSClientUtil;
+import com.alexmisko.vo.FavorMessage;
+import com.alexmisko.vo.FavorMessageDetail;
 import com.alexmisko.vo.LoginUserInfo;
 import com.alexmisko.vo.Result;
 import com.alexmisko.vo.Search;
@@ -201,7 +203,10 @@ public class VideoController {
             isFavor = true;
             // 点赞数+1
             videoService.update().setSql("favor_num = favor_num + 1").eq("id", favor.getVideoId()).update();
-            rocketMQTemplate.convertAndSend("message_favor", "用户【" + userId + "】为你的视频【" + favor.getVideoId() + "】点赞了！");
+            rocketMQTemplate.convertAndSend("message_favor", FavorMessage.builder()
+            .receiverId(favor.getReceiverId())
+            .message(new FavorMessageDetail("favor", "用户【" + userId + "】为你的视频【" + favor.getVideoId() + "】点赞了！"))
+            .build());
         }else{
             favorService.remove(queryWrapper);
             // 点赞数-1

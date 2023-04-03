@@ -13,6 +13,8 @@ import org.springframework.stereotype.Component;
 
 import com.alexmisko.config.ConditionException;
 import com.alexmisko.util.TokenParseUtil;
+import com.alexmisko.utils.JsonUtils;
+import com.alexmisko.vo.ConnectionMessage;
 import com.alexmisko.vo.LoginUserInfo;
 
 import lombok.extern.slf4j.Slf4j;
@@ -41,7 +43,7 @@ public class WebSocketServer {
         log.info("this: [{}]", this);
         webSocketSet.add(this);
         try {
-            sendMessage("用户ID=" + userId + "连接成功");
+            sendMessage(JsonUtils.objectToJson(ConnectionMessage.builder().type("connection").content("用户ID=" + userId + "连接成功").build()));
         } catch(IOException e){
             log.error("Websocket IO Exception");
         }

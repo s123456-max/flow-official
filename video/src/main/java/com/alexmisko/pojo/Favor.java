@@ -23,4 +23,7 @@ public class Favor {
 
     @TableField(fill = FieldFill.INSERT)
     private Date createTime;
+
+    @TableField(exist = false)
+    private Long receiverId;
 }
