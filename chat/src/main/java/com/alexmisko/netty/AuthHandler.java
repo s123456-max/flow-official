@@ -35,6 +35,7 @@ public class AuthHandler extends SimpleChannelInboundHandler<FullHttpRequest>{
         Long senderId = loginUserInfo.getId();
         log.info("senderId: [{}]", senderId);
         // 关联id和channel
+        log.info("channelId: [{}]", ctx.channel().id().asLongText());
         UserChannelManager.userChannelGroup.put(senderId, ctx.channel());
         log.info("channel: [{}]", JsonUtils.objectToJson(ctx.channel()));
         ctx.channel().attr(AttributeKey.valueOf("id")).set(senderId);

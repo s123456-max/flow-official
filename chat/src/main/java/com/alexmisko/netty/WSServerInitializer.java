@@ -7,6 +7,7 @@ import io.netty.handler.codec.http.HttpObjectAggregator;
 import io.netty.handler.codec.http.HttpServerCodec;
 import io.netty.handler.codec.http.websocketx.WebSocketServerProtocolHandler;
 import io.netty.handler.stream.ChunkedWriteHandler;
+import io.netty.handler.timeout.IdleStateHandler;
 
 public class WSServerInitializer extends ChannelInitializer<SocketChannel> {
     @Override
@@ -18,6 +19,10 @@ public class WSServerInitializer extends ChannelInitializer<SocketChannel> {
         channelPipeline.addLast(new ChunkedWriteHandler());
         // 对http进行聚合，聚合成FullHttpRequest或FullHttpResponse
         channelPipeline.addLast(new HttpObjectAggregator(1024 * 64));
+        // 处理心跳机制
+        channelPipeline.addLast(new IdleStateHandler(8, 10, 12));
+        channelPipeline.addLast(new HeartBeatHandler());
+        // 处理权限认证
         channelPipeline.addLast(new AuthHandler());
         // websocket处理的协议，用于指定给客户端连接访问的路由
         channelPipeline.addLast(new WebSocketServerProtocolHandler("/ws"));

@@ -1,16 +1,7 @@
-package com.alexmisko.netty.entity;
-
-import java.io.Serializable;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
+package com.alexmisko.pojo;
 import lombok.Data;
-import lombok.NoArgsConstructor;
-
 
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
 public class MsgContent{
     private String type; // 消息类型
     private Long senderId; // 发送者id

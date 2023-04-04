@@ -10,17 +10,26 @@ import io.netty.util.AttributeKey;
 import io.netty.util.concurrent.GlobalEventExecutor;
 import lombok.extern.slf4j.Slf4j;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import javax.annotation.Resource;
+
+import org.apache.rocketmq.spring.core.RocketMQTemplate;
 
 import com.alexmisko.netty.entity.MsgContent;
 import com.alexmisko.netty.enums.MsgTypeEnum;
 import com.alexmisko.utils.JsonUtils;
+import com.alexmisko.utils.SpringUtils;
 
 @Slf4j
 public class ChatHandler extends SimpleChannelInboundHandler<TextWebSocketFrame> {
 
+    private static RocketMQTemplate rocketMQTemplate;
+    static {
+        rocketMQTemplate = SpringUtils.getBean(RocketMQTemplate.class);
+    }
+
+
     // 用来记录和管理所有客户端的channel
-    private static ChannelGroup users = new DefaultChannelGroup(GlobalEventExecutor.INSTANCE);
+    public static ChannelGroup users = new DefaultChannelGroup(GlobalEventExecutor.INSTANCE);
 
     // 当客户端连接服务端之后
     @Override
@@ -30,9 +39,13 @@ public class ChatHandler extends SimpleChannelInboundHandler<TextWebSocketFrame>
 
     @Override
     public void handlerRemoved(ChannelHandlerContext ctx) throws Exception {
-        System.out.println("客户端断开");
-        System.out.println(ctx.channel().id().asLongText());
-        System.out.println(ctx.channel().id().asShortText());
+        log.info("客户端[{}]断开", ctx.channel().id().asLongText());
+        UserChannelManager.userChannelGroup.forEach((k, v) -> {
+            if(v.id().asLongText().equals(ctx.channel().id().asLongText())){
+                UserChannelManager.userChannelGroup.remove(k);
+                log.info("移除用户id=[{}]成功！", k);
+            }
+        });
         users.remove(ctx.channel());
     }
 
@@ -49,21 +62,20 @@ public class ChatHandler extends SimpleChannelInboundHandler<TextWebSocketFrame>
         String content = textWebSocketFrame.text();
         log.info(JsonUtils.objectToJson(content));
         MsgContent msgContent = JsonUtils.jsonToObject(content, MsgContent.class);
-        Integer type = msgContent.getType();
-        if (type == MsgTypeEnum.CONNECT.type){
-            log.info("CONNECT连接");
-        }else if(type == MsgTypeEnum.CHAT.type){
+        String type = msgContent.getType();
+        if (type.equals(MsgTypeEnum.WORD.type)){
+            log.info("来到这了");
             // 聊天信息保存到数据库，标记未签收状态
             Long senderId = Long.valueOf(ctx.channel().attr(AttributeKey.valueOf("id")).get().toString());
             msgContent.setSenderId(senderId);
             Long receiverId = msgContent.getReceiverId();
-            String msgId = "msg-0001";
-            msgContent.setMsgId(msgId);
             // 发送消息
             Channel receiverChannel = UserChannelManager.userChannelGroup.get(receiverId);
             if(receiverChannel == null){
                 log.info("用户离线......");
-                // 用户离线，消息推送
+                // 用户离线，消息推送至数据库
+                log.info("msgContent: [{}]", msgContent);
+                rocketMQTemplate.convertAndSend("message_chat", msgContent);
             }else{
                 Channel findChannel = users.find(receiverChannel.id());
                 if(findChannel != null){
@@ -72,10 +84,8 @@ public class ChatHandler extends SimpleChannelInboundHandler<TextWebSocketFrame>
                     log.info("chatMsg: [{}]", JsonUtils.objectToJson(msgContent));
                 }
             }
-        }else if(type == MsgTypeEnum.SIGNED.type){
-
-        }else if(type == MsgTypeEnum.KEEPALIVE.type){
-
+        }else if(type.equals(MsgTypeEnum.KEEPALIVE.type)){
+            log.info("服务端收到心跳");
         }
     }
 }
