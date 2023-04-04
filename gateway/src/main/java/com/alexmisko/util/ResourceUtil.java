@@ -29,7 +29,7 @@ public class ResourceUtil{
         "/video/chunk/user",
         "/video/flow/user",
         "/video/favor/user",
-        "/follow/user",
+        "/follow/user"
     };
 
     // 管理员资源

@@ -16,4 +16,5 @@ public class MsgContent{
     private Long senderId; // 发送者id
     private Long receiverId; // 接受者id
     private String message;  // 聊天内容
+    private String status;  // 离线消息/在线消息
 }

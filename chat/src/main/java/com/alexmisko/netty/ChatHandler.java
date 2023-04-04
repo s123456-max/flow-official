@@ -73,15 +73,19 @@ public class ChatHandler extends SimpleChannelInboundHandler<TextWebSocketFrame>
             Channel receiverChannel = UserChannelManager.userChannelGroup.get(receiverId);
             if(receiverChannel == null){
                 log.info("用户离线......");
-                // 用户离线，消息推送至数据库
+                // 用户离线，离线消息推送至数据库
+                msgContent.setStatus("offline");
                 log.info("msgContent: [{}]", msgContent);
                 rocketMQTemplate.convertAndSend("message_chat", msgContent);
             }else{
                 Channel findChannel = users.find(receiverChannel.id());
                 if(findChannel != null){
-                    // 用户在线
+                    // 用户离线，在线消息推送至数据库
                     receiverChannel.writeAndFlush(new TextWebSocketFrame(JsonUtils.objectToJson(msgContent)));
                     log.info("chatMsg: [{}]", JsonUtils.objectToJson(msgContent));
+                    msgContent.setStatus("online");
+                    log.info("msgContent: [{}]", msgContent);
+                    rocketMQTemplate.convertAndSend("message_chat", msgContent);
                 }
             }
         }else if(type.equals(MsgTypeEnum.KEEPALIVE.type)){
