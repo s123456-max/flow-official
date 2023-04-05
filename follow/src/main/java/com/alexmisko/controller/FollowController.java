@@ -3,6 +3,7 @@ package com.alexmisko.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -14,6 +15,9 @@ import com.alexmisko.vo.LoginUserInfo;
 import com.alexmisko.vo.Result;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @RestController
 public class FollowController {
 
@@ -32,7 +36,8 @@ public class FollowController {
     }
 
     @PostMapping("follow/user")
-    public Result<String> followEmperor(Follow follow){
+    public Result<String> followEmperor(@RequestBody Follow follow){
+        log.info("emperor: [{}]", follow.getEmperor());
         LoginUserInfo loginUserInfo = AccessContext.getLoginUserInfo();
         Long userId = loginUserInfo.getId();
         if(userId.equals(follow.getEmperor())){
