@@ -25,9 +25,6 @@ public class LoginUserInfoInterceptor implements HandlerInterceptor {
         String token = request.getHeader(CommonConstant.JWT_USER_INFO_KEY);
         if(token == null){
             throw new ConditionException("token为空");
-        }else if(token.equals("rocketmq-vip-access")){
-            log.info("rocketmq走vip通道");
-            return true;
         }
         LoginUserInfo loginUserInfo = null;
         try{

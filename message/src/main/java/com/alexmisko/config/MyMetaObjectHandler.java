@@ -14,7 +14,6 @@ public class MyMetaObjectHandler implements MetaObjectHandler {
     public void insertFill(MetaObject metaObject) {
         log.info("insertFill start ...");
         Date date = new Date();
-        date.setHours(new Date().getHours() + 8);
         this.setFieldValByName("createTime",date,metaObject);
         this.setFieldValByName("updateTime",date,metaObject);
     }
@@ -23,7 +22,6 @@ public class MyMetaObjectHandler implements MetaObjectHandler {
     public void updateFill(MetaObject metaObject) {
         log.info("updateFill start ...");
         Date date = new Date();
-        date.setHours(new Date().getHours() + 8);
         this.setFieldValByName("updateTime",date,metaObject);
     }
 }

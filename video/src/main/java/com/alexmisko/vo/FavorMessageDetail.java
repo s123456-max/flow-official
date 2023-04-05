@@ -12,6 +12,8 @@ import lombok.NoArgsConstructor;
 @Builder
 public class FavorMessageDetail {
 
+    private Long videoId;
+
     private String type;
     
     private String content;

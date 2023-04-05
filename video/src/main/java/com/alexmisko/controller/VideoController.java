@@ -204,10 +204,9 @@ public class VideoController {
             // 点赞数+1
             videoService.update().setSql("favor_num = favor_num + 1").eq("id", favor.getVideoId()).update();
             rocketMQTemplate.convertAndSend("message_favor", FavorMessage.builder()
-            .videoId(favor.getVideoId())
             .senderId(userId)
             .receiverId(favor.getReceiverId())
-            .message(new FavorMessageDetail("favor", "用户【" + userId + "】为你的视频【" + favor.getVideoId() + "】点赞了！"))
+            .message(new FavorMessageDetail(favor.getVideoId(), "favor", "用户【" + userId + "】为你的视频【" + favor.getVideoId() + "】点赞了！"))
             .build());
         }else{
             favorService.remove(queryWrapper);

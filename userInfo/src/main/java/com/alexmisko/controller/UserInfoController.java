@@ -30,8 +30,6 @@ public class UserInfoController {
      */
     @GetMapping("/userInfo/admin/{id}")
     public Result<UserInfo> getAnyUserInfo(@PathVariable Long id){
-        LoginUserInfo loginUserInfo = AccessContext.getLoginUserInfo();
-        log.info("userId and username: [{}] [{}]", loginUserInfo.getId(), loginUserInfo.getUsername());
         return userInfoService.getByUserId(id);
     }
 }

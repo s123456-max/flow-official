@@ -28,6 +28,6 @@ public class MsgContent{
     private String status;  // 离线消息/在线消息
 
     @TableField(fill = FieldFill.INSERT)
-    // @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
     private Date createTime;
 }
