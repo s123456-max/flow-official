@@ -54,3 +54,8 @@ spring:
           uri: lb://CHAT-NETTY
           predicates:
             - Path=/ws/**
+
+        - id: search_router
+          uri: lb://SEARCH
+          predicates:
+            - Path=/search/**

@@ -219,4 +219,59 @@ public class VideoController {
             return Result.success("取消点赞成功！");
         }
     }
+
+    /**
+     * 查询个人主页视频列表（只包含视频缩略图和图片）
+     */
+    @GetMapping("/video/home/user")
+    public Result<IPage<Video>> getHomeVideoList(Long page, Long num){
+        LoginUserInfo loginUserInfo = AccessContext.getLoginUserInfo();
+        Long userId = loginUserInfo.getId();
+        QueryWrapper<Video> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("user_id", userId).select("id");
+        queryWrapper.orderByDesc("create_time");
+        IPage<Video> iPage = new Page<>(page, num);
+        IPage<Video> iPageVideo = videoService.page(iPage, queryWrapper);
+        List<Video> videoList =  iPageVideo.getRecords();
+        videoList.forEach(item -> {
+            item.setMediaList(mediaService.getMediaList(item.getId()));
+        });
+        iPageVideo.setRecords(videoList);
+        return Result.success(iPageVideo);
+    }
+
+    /**
+     * 主页查询单个视频
+     */
+    @GetMapping("/video/home/user/{id}")
+    public Result<Video> getHomeVideoOne(@PathVariable Long id){
+        LoginUserInfo loginUserInfo = AccessContext.getLoginUserInfo();
+        Long userId = loginUserInfo.getId();
+        Video video = videoService.getById(id);
+        // 先遍历取id，再请求userInfo
+        Result<UserInfo> result = userInfoFeign.getUserInfo(userId);
+        video.setUserInfo(result.getData());
+        // 再添加mediaList
+        video.setMediaList(mediaService.getMediaList(id));
+        log.info("返回的mediaList: [{}]", mediaService.getMediaList(id));
+        // 再添加tagList
+        Result<List<Tag>> result1 = tagFeign.getTagList(id);
+        log.info("返回的tagList: [{}]", result1.getData());
+        video.setTagList(result1.getData());
+        // 添加该用户是否点赞
+        QueryWrapper<Favor> queryWrapper1 = new QueryWrapper<>();
+        queryWrapper1.eq("video_id", id).eq("user_id", userId);
+        if (favorService.getOne(queryWrapper1) != null){
+            video.setIsFavor("yes");
+        }else{
+            video.setIsFavor("no");
+        }
+        // 查询该用户是否关注了创作者
+        if (userId.equals(video.getUserId())){
+            video.setIsFollow("ignore");
+        }else{
+            video.setIsFollow(followFeign.isRelationship(userId, id).getMsg());
+        }
+        return Result.success(video);
+    }
 }

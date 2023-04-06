@@ -20,4 +20,6 @@ public class Media {
     private String type;
     
     private String digest;
+
+    private String thumb;
 }
