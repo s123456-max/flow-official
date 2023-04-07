@@ -25,12 +25,13 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
 import org.springframework.stereotype.Service;
 
-import com.alexmisko.feign.UserInfoFeign;
+import com.alexmisko.feign.VideoFeign;
 import com.alexmisko.pojo.Search;
 import com.alexmisko.repository.SearchRepository;
 import com.alexmisko.service.SearchService;
 import com.alexmisko.vo.Result;
 import com.alexmisko.vo.UserInfo;
+import com.alexmisko.vo.Video;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -45,7 +46,7 @@ public class SearchServiceImpl implements SearchService{
     private RestHighLevelClient restHighLevelClient;
 
     @Autowired
-    private UserInfoFeign userInfoFeign;
+    private VideoFeign videoFeign;
 
 
     public void addSearch(Search search){
@@ -82,7 +83,7 @@ public class SearchServiceImpl implements SearchService{
         }
         // 多字段高亮将这个置为false
         highlightBuilder.requireFieldMatch(false);
-        highlightBuilder.preTags("<span style=\"color:red\">");
+        highlightBuilder.preTags("<span style=\"color:coral\">");
         highlightBuilder.postTags("</span>");
         sourceBuilder.highlighter(highlightBuilder);
         // 执行搜索
@@ -98,11 +99,11 @@ public class SearchServiceImpl implements SearchService{
             Map<String, HighlightField> highLightBuilderFields = hit.getHighlightFields();
             Map<String, Object> sourceMap = hit.getSourceAsMap();
             log.info("sourceMap: [{}]", sourceMap);
-            // 增加用户信息
-            if (sourceMap.get("userId") != null){
-                Result<UserInfo> result = userInfoFeign.getUserInfo(Long.valueOf((sourceMap.get("userId")).toString()));
-                sourceMap.put("userInfo", result.getData());
-            } 
+            // 增加视频信息
+            if (sourceMap.get("id") != null){
+                Result<Video> result = videoFeign.getHomeVideoOne(Long.valueOf((sourceMap.get("id")).toString()));
+                sourceMap.put("video", result.getData());
+            }
             for(String key : array){
                 HighlightField field = highLightBuilderFields.get(key);
                 log.info("field: [{}]", field);

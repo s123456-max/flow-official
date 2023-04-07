@@ -14,3 +14,9 @@ elasticsearch:
   url: 38.34.245.48:9200
 rocketmq:
   name-server: 38.34.245.48:9876
+feign:
+  client:
+    config:
+      default:
+        connectTimeout: 10000
+        readTimeout: 600000

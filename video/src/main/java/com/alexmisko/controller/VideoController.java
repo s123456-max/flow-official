@@ -245,9 +245,10 @@ public class VideoController {
      */
     @GetMapping("/video/home/user/{id}")
     public Result<Video> getHomeVideoOne(@PathVariable Long id){
-        LoginUserInfo loginUserInfo = AccessContext.getLoginUserInfo();
-        Long userId = loginUserInfo.getId();
+        // LoginUserInfo loginUserInfo = AccessContext.getLoginUserInfo();
+        // Long userId = loginUserInfo.getId();
         Video video = videoService.getById(id);
+        Long userId = video.getUserId();
         // 先遍历取id，再请求userInfo
         Result<UserInfo> result = userInfoFeign.getUserInfo(userId);
         video.setUserInfo(result.getData());

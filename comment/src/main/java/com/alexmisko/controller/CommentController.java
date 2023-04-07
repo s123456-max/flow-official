@@ -1,16 +1,24 @@
 package com.alexmisko.controller;
 
 import com.alexmisko.feign.UserInfoFeign;
+import com.alexmisko.filter.AccessContext;
 import com.alexmisko.pojo.Comment;
 import com.alexmisko.service.CommentService;
+import com.alexmisko.vo.LoginUserInfo;
 import com.alexmisko.vo.Result;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
+@Slf4j
 @RestController
 public class CommentController {
 
@@ -58,5 +66,18 @@ public class CommentController {
             lists.remove(i - 1);
         }
         return Result.success(lists);
+    }
+
+    /**
+     * 用户评论
+     */
+    @PostMapping("/comment/user")
+    public Result<String> publishComment(@RequestBody Comment comment){
+        log.info("comment: []", comment);
+        LoginUserInfo loginUserInfo = AccessContext.getLoginUserInfo();
+        Long userId = loginUserInfo.getId();
+        comment.setUserId(userId);
+        commentService.save(comment);
+        return Result.success("评论成功！");
     }
 }
